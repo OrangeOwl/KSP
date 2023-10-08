@@ -1,6 +1,3 @@
-<!-- To DO: -Create Enemies and Make Collision Detection for them -Make Power-ups for Ship to use-->
-
-
 <!doctype html> 
 <html lang="en"> 
 <head> 
@@ -67,6 +64,7 @@
         this.load.spritesheet("ship", "images/Ship_" + ship_c + "_Sprites.png", { frameWidth: 32, frameHeight: 32});
         this.load.image('rat_ship1', "images/rat_ship1.png");
         this.load.spritesheet("boost", "images/reward.png", { frameWidth: 30, frameHeight: 30 });
+        this.load.spritesheet("rat_ship2", "images/rat_ship2.png", { frameWidth: 20, frameHeight: 20 });
 
         this.load.audio('bg_music', ["audio/bg.mp3"]);
         this.load.audio('shot_sfx', ["audio/shot.mp3"]);
@@ -89,7 +87,7 @@
 
         this.anims.create({
             key: 'scroll',
-            frames: this.anims.generateFrameNumbers("space", { start: 0, end: 5 }),
+            frames: this.anims.generateFrameNumbers("space"),
             frameRate: 5,
             repeat: -1
         });
@@ -109,7 +107,13 @@
 
         this.anims.create({
             key: 'reward',
-            frames: this.anims.generateFrameNumbers('boost', { start: 0, end: 4 }),
+            frames: this.anims.generateFrameNumbers('boost'),
+            frameRate: 5,
+            repeat: -1
+        });
+        this.anims.create({
+            key: 'rat_ship2',
+            frames: this.anims.generateFrameNumbers('rat_ship2'),
             frameRate: 5,
             repeat: -1
         });
@@ -119,10 +123,13 @@
         scoreText = this.add.text(16, 16, '' + player_name + ": 0 points", { fontSize: '32px', fill: '#FFF' });
         laser_shots = this.physics.add.group();
         rat_ship = this.physics.add.group();
+        rat_ship2 = this.physics.add.group();
         boosts = this.physics.add.group();
 
         this.physics.add.overlap(player, rat_ship, loseGame, null, this);
+        this.physics.add.overlap(player, rat_ship2, loseGame, null, this);
         this.physics.add.overlap(rat_ship, laser_shots, explodeShip, null, this);
+        this.physics.add.overlap(rat_ship2, laser_shots, explodeShip, null, this);
         this.physics.add.overlap(player, boosts, collectBoosts, null, this);
     }
 
@@ -134,7 +141,6 @@
        {
             console.log(bRate);
             if (bRate < 0) {
-                scoreText.setText(player_name + ':' + score + ' - WEAPON UPGRADE - BEAM'); 
                 beam();           
             } else {
                 bullet(bRate);            
@@ -174,20 +180,22 @@
 
        if (enemy < 5) {
         generateEnemies(enemySpeed);
-       } else {
+        let chance = Math.floor(Math.random() * (4 - 1) + 1);
+        if (chance == 3) { generateEnemySpeeders(enemySpeed);} else {return;};
+       }else {
         return;
        }
 
-       if (score > 3000) {
+       if (score > 2000) {
         // boss event
         scoreText.setText(player_name + ':' + score + ' - THE RODENT KING'); 
-       } if (score > 2000) {
-        scoreText.setText(player_name + ':' + score + ' - ALMOST THERE!'); 
-        enemySpeed = 1000;
        } if (score > 1000) {
+        scoreText.setText(player_name + ':' + score  + " - YOU'RE ALMOST THERE!'"); 
+        enemySpeed = 1000;
+       } if (score > 600) {
         enemySpeed = 500; 
        } if (score > 300) {
-        scoreText.setText(player_name + ':' + score + " - YOU'RE MAKING PROGRESS"); 
+        scoreText.setText(player_name + ':' + score + " - YOU'RE MAKING PROGRESS'"); 
         enemySpeed = 400;
        }
        }
@@ -272,7 +280,6 @@
         score += 10;
         scoreText.setText(player_name + ': ' + score);
         let chance = Math.floor(Math.random() * (4 - 1) + 1);
-        console.log(chance);
         if (chance == 3) {
             var boostDrop = boosts.create(rat_ship.x, rat_ship.y, "boost");
             boostDrop.anims.play('reward', true);
@@ -288,6 +295,15 @@
         var y = (player.y < 50) ? Phaser.Math.Between(50, 1000) : Phaser.Math.Between(0, 1000);
         var enemies = rat_ship.create(950, y, "rat_ship1");
         enemy_physics(enemies, x);
+    }
+
+    function generateEnemySpeeders (x) {
+        enemy++;
+        var y = (player.y < 50) ? Phaser.Math.Between(50, 1000) : Phaser.Math.Between(0, 1000);
+        var enemies = rat_ship.create(950, y, "rat_ship2");
+        enemies.anims.play('rat_ship2', true);
+        let z = x*2;
+        enemy_physics(enemies, z);
     }
 
 </script>
