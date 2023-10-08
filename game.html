@@ -191,7 +191,7 @@
 
        if (score == 1500) {
         // boss event
-        scoreText.setText(player_name + ':' + score + " - YOU'RE MAKING PROGRESS'");
+        scoreText.setText(player_name + ':' + score + " - YOU WIN!!!");
         player.setTint(0x008000);
         this.physics.pause();
        } if (score > 1000) {
@@ -199,9 +199,8 @@
         enemySpeed = 600;
        } if (score > 600) {
         enemySpeed = 400; 
-       } if (score > 300) {
+       } if (score == 300) {
         scoreText.setText(player_name + ':' + score + " - YOU'RE MAKING PROGRESS'"); 
-        enemySpeed = 300;
        }
        }
 
