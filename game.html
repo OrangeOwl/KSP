@@ -1,3 +1,6 @@
+<!-- To DO: -Create Enemies and Make Collision Detection for them -Make Power-ups for Ship to use-->
+
+
 <!doctype html> 
 <html lang="en"> 
 <head> 
@@ -178,7 +181,7 @@
             player.anims.play('still');
        }
 
-       if (enemy < 5) {
+       if (enemy < 3) {
         generateEnemies(enemySpeed);
         let chance = Math.floor(Math.random() * (4 - 1) + 1);
         if (chance == 3) { generateEnemySpeeders(enemySpeed);} else {return;};
@@ -186,17 +189,19 @@
         return;
        }
 
-       if (score > 2000) {
+       if (score == 1500) {
         // boss event
-        scoreText.setText(player_name + ':' + score + ' - THE RODENT KING'); 
+        scoreText.setText(player_name + ':' + score + " - YOU'RE MAKING PROGRESS'");
+        player.setTint(0x008000);
+        this.physics.pause();
        } if (score > 1000) {
         scoreText.setText(player_name + ':' + score  + " - YOU'RE ALMOST THERE!'"); 
-        enemySpeed = 1000;
+        enemySpeed = 600;
        } if (score > 600) {
-        enemySpeed = 500; 
+        enemySpeed = 400; 
        } if (score > 300) {
         scoreText.setText(player_name + ':' + score + " - YOU'RE MAKING PROGRESS'"); 
-        enemySpeed = 400;
+        enemySpeed = 300;
        }
        }
 
