@@ -24,18 +24,6 @@ function ans() {
   });
 }
 
-function arcade_game(ship_c, laser_c, player_name) {
-  var can_DOM = document.createElement('canvas');
-  can_DOM.setAttribute('id', 'game-layer');
-  document.body.appendChild(can_DOM);
-  // -------------------------------------------- //
-  var canvas = document.getElementById("game-layer");
-  var context = canvas.getContext("2d");
-
-  context.fillStyle = "grey";
-  context.fillRect(0,0, canvas.width, canvas.height);
-}
-
 function game_start(breed, eye_colour, name) {
   var ship_c = breed;
   var laser_c = eye_colour;
@@ -49,16 +37,17 @@ function game_start(breed, eye_colour, name) {
   document.body.style.backgroundColor = "black";
   var div = document.createElement('div');
   div.setAttribute('class', 'night-mode'); // style it to the form div
-  div.innerHTML = "<h1>**EMERGENCY TRANSMISSION**</h1><br><h2>Unfortunately your brief elation must come to an end. The evil space rats have begun an invasion of planet earth, and the super tippity top secret organization known as KSP (Kitty Space Program) have demanded all able-bodied cats must particapte in our global defense.</h2><h2>Say your goodbyes, your cat is needed to save the world.</h2>";
+  div.innerHTML = "<h1>**EMERGENCY TRANSMISSION**</h1><br><h2>Unfortunately your brief elation must come to an end. The evil space rats have begun an invasion of planet earth, and the super extra top-secret organization known as KSP (Kitty Space Program) have demanded all able-bodied cats must participate in our global defense.</h2><h2>Say your goodbyes, your cat is needed to save the world.</h2><h2>(Get to 3000 points and take down the Space Rodent King, collect boost to increasure your fire rate)</h2>";
   document.body.appendChild(div); //append div to body
   var cont_txt = document.createElement('div');
   cont_txt.setAttribute('class', 'form');
-  cont_txt.innerHTML = "<button class='SUBMIT'>Good-Bye</button>";
+  cont_txt.innerHTML = "<button class='SUBMIT-EMERGENCY'>Good-Bye</button>";
   document.body.appendChild(cont_txt);
-  cont_txt.addEventListener("click", function(){
-    div.remove();
-    cont_txt.remove();
-    arcade_game(ship_c, laser_c, player_name);
+  cont_txt.addEventListener("click", function(){ //add event listener to good bye button, then store cookies when pressed and load game
+    document.cookie = "ship_colour=" + ship_c + "; SameSite=None; Secure";
+    document.cookie = "laser_colour=" + laser_c + "; SameSite=None; Secure";
+    document.cookie = "player_name=" + player_name + "; SameSite=None; Secure";
+    window.location.href = "game.html";
   });
 }
 

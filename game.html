@@ -1,14 +1,301 @@
-<!DOCTYPE html>
-<html lang="">
-<head>
-  <meta charset="utf-8">
-  <link rel="icon" href="cat_pilot.jpg">
-  <script src="scripts/main.js" defer></script>
-  <link rel="stylesheet" href="css/style.css">
-  <title>::KSP::</title>
+<!-- To DO: -Create Enemies and Make Collision Detection for them -Make Power-ups for Ship to use-->
+
+
+<!doctype html> 
+<html lang="en"> 
+<head> 
+    <meta charset="UTF-8" />
+    <title>::KSP::</title>
+    <script src="//cdn.jsdelivr.net/npm/phaser@3.11.0/dist/phaser.js"></script>
+    <link rel="stylesheet" href="css/game.css">
 </head>
-  <body>
-    <p id="text_val">HELLO WORLD</p>
-    <!--  -->
-  </body>
+<body>
+<script type="text/javascript">
+
+    // a function to split and get cookie data from the form
+    function getCookie(cname) {
+        var name = cname + "=";
+        var ca = document.cookie.split(';');
+        for(var i=0; i<ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0)==' ') c = c.substring(1);
+            if (c.indexOf(name) != -1) return c.substring(name.length,c.length);
+        }
+        return "";
+    }
+
+    //getting the variables back from the cookies
+    var ship_c = getCookie("ship_colour");
+    var laser_c = getCookie("laser_colour");
+    var player_name = getCookie("player_name");
+    var bRate = 30;
+    var bullet_status = 0;
+    var score = 0;
+    var scoreText;
+    var enemy = 0;
+    var enemySpeed = 200;
+
+
+    console.log(ship_c);
+    console.log(laser_c);
+
+    //Phasers Config object, sets parameters for how the game looks/functions
+    var config = {
+        type: Phaser.AUTO,
+        width: 1000,
+        height: 600,
+        physics: {
+            default: 'arcade',
+            arcade: {
+                gravity: { y: 0 },
+                debug: false
+            }
+        }, pixelArt: true,
+        scene: {
+            preload: preload,
+            create: create,
+            update: update
+        }
+    };
+
+    //starts the game object
+    var game = new Phaser.Game(config);
+
+    function preload (){
+    	this.load.spritesheet("space", "images/Space_bg.png", { frameWidth: 128, frameHeight: 128 });
+        this.load.image('laser', "images/" + laser_c + ".png");
+        this.load.spritesheet("ship", "images/Ship_" + ship_c + "_Sprites.png", { frameWidth: 32, frameHeight: 32});
+        this.load.image('rat_ship1', "images/rat_ship1.png");
+        this.load.spritesheet("boost", "images/reward.png", { frameWidth: 30, frameHeight: 30 });
+
+        this.load.audio('bg_music', ["audio/bg.mp3"]);
+        this.load.audio('shot_sfx', ["audio/shot.mp3"]);
+        this.load.audio('impact_sfx', ["audio/impact.mp3"]);
+        this.load.audio('points_sfx', ["audio/points.mp3"]);
+    }
+
+    function create (){
+        bg = this.physics.add.sprite(100, 100, "space").setScale(7);
+        bg2 = this.physics.add.sprite(800, 100, "space").setScale(7);
+        player = this.physics.add.sprite(100, 200, 'ship').setScale(2);
+        player.setCollideWorldBounds(true);
+        bg_music = this.sound.add("bg_music", { loop: true });
+        shot_sfx = this.sound.add("shot_sfx", { loop: false });
+        impact_sfx = this.sound.add("impact_sfx", { loop: false });
+        points_sfx = this.sound.add("points_sfx", { loop: false });
+
+        bg_music.play();
+
+        this.anims.create({
+            key: 'scroll',
+            frames: this.anims.generateFrameNumbers("space", { start: 0, end: 5 }),
+            frameRate: 5,
+            repeat: -1
+        });
+        
+        this.anims.create({
+            key: 'direction',
+            frames: this.anims.generateFrameNumbers('ship', { start: 1, end: 4 }),
+            frameRate: 5,
+            repeat: -1
+        });
+
+        this.anims.create({
+            key: 'still',
+            frames: [ { key: 'ship', frame: 0 } ],
+            frameRate: 20
+        });
+
+        this.anims.create({
+            key: 'reward',
+            frames: this.anims.generateFrameNumbers('boost', { start: 0, end: 4 }),
+            frameRate: 5,
+            repeat: -1
+        });
+
+        cursors = this.input.keyboard.createCursorKeys();
+
+        scoreText = this.add.text(16, 16, '' + player_name + ": 0 points", { fontSize: '32px', fill: '#FFF' });
+        laser_shots = this.physics.add.group();
+        rat_ship = this.physics.add.group();
+        boosts = this.physics.add.group();
+
+        this.physics.add.overlap(player, rat_ship, loseGame, null, this);
+        this.physics.add.overlap(rat_ship, laser_shots, explodeShip, null, this);
+        this.physics.add.overlap(player, boosts, collectBoosts, null, this);
+    }
+
+    function update (){
+       bg.anims.play('scroll', true);
+       bg2.anims.play('scroll', true);
+                //Sets up the key press events
+       if (cursors.space.isDown)
+       {
+            console.log(bRate);
+            if (bRate < 0) {
+                beam();           
+            } else {
+                bullet(bRate);            
+            }
+       }
+       if (cursors.left.isDown)
+       {
+            player.setVelocityX(-260);
+
+            player.anims.play('direction', true);
+       }
+       else if (cursors.right.isDown)
+       {
+            player.setVelocityX(260);
+
+            player.anims.play('direction', true);
+       }
+       else if (cursors.up.isDown)
+       {
+            player.setVelocityY(-260);
+
+            player.anims.play('direction', true);
+       }
+       else if (cursors.down.isDown)
+       {
+            player.setVelocityY(260);
+
+            player.anims.play('direction', true);    
+       }
+       else
+       {
+            player.setVelocityX(0);
+            player.setVelocityY(0);
+
+            player.anims.play('still');
+       }
+
+       if (enemy < 5) {
+        generateEnemies(enemySpeed);
+       } else {
+        return;
+       }
+
+       if (score > 2200) {
+        // boss event
+        scoreText.setText(player_name + ':' + score + ' - THE RODENT KING'); 
+       } if (score > 1500) {
+        scoreText.setText(player_name + ':' + score + ' - WEAPON UPGRADE: BEAM'); 
+        enemySpeed = 1000;
+       } if (score > 1000) {
+        enemySpeed = 500; 
+       } if (score > 300) {
+        scoreText.setText(player_name + ':' + score + ' - WEAPON UPGRADE: RAPID FIRE'); 
+        enemySpeed = 400;
+       }
+       }
+
+    function fireRate (x){
+        rate = bullet_status++;
+        if (rate == x) {
+            bullet_status = 0;
+            shot_sfx.play();
+            return y = true;        
+        } else {
+            return y = false;        
+        }
+    }
+    function bullet_physics (x){
+        x.setVelocityX(400);
+        //x.setVelocityY(0);
+        x.setCollideWorldBounds(true);        
+        x.body.onWorldBounds = true;
+        x.body.world.on('worldbounds', function(body) {
+  // Check if the body's game object is the sprite you are listening for
+        if (body.gameObject === this) {
+    // Stop physics and render updates for this object
+            this.setActive(false);
+            this.setVisible(false);
+            }
+        }, x);
+    }
+
+    function enemy_physics (x, y){
+        x.setVelocityX(-y);
+        //x.setVelocityY(0);
+        x.setCollideWorldBounds(true);        
+        x.body.onWorldBounds = true;
+        x.body.world.on('worldbounds', function(body) {
+  // Check if the body's game object is the sprite you are listening for
+        if (body.gameObject === this) {
+    // Stop physics and render updates for this object
+            this.disableBody(true, true);
+            enemy--;
+            }
+        }, x);
+    }
+
+    function beam () {
+        var beam = laser_shots.create(player.x+35, player.y, "laser");
+        bullet_physics(beam);
+    }
+
+    function bullet (x) {
+        fireRate(x);
+        if (y == true) {
+            var bullet = laser_shots.create(player.x+35, player.y, "laser");
+            bullet_physics(bullet);
+        } else {
+            return;        
+        }     
+    }
+
+    function collectBoosts (player, boosts) {
+        boosts.disableBody(true, true);
+        bRate--;
+        bullet_status = 0;
+        points_sfx.play();
+    }
+
+    function loseGame (player, rat_ship) {
+        player.setTint(0xff0000);
+        rat_ship.disableBody(true, true);
+        bg_music.pause();
+        bg.anims.play('scroll', true);
+        impact_sfx.play();
+        this.physics.pause();
+        scoreText.setText(player_name + ': GAME OVER - REFRESH TO RETRY');      
+    }
+
+    function explodeShip (rat_ship, laser_shots) {
+        enemy--;
+        points_sfx.play();
+        laser_shots.disableBody(true, true);
+        rat_ship.disableBody(true, true);
+        score += 10;
+        scoreText.setText(player_name + ': ' + score);
+        let chance = Math.floor(Math.random() * (4 - 1) + 1);
+        console.log(chance);
+        if (chance == 3) {
+            var boostDrop = boosts.create(rat_ship.x, rat_ship.y, "boost");
+            boostDrop.anims.play('reward', true);
+            boostDrop.setVelocityX(0);
+            boostDrop.setVelocityY(0);
+        } else {
+            return;
+        }
+    }
+
+    function generateEnemies (x) {
+        enemy++;
+        var y = (player.y < 50) ? Phaser.Math.Between(50, 1000) : Phaser.Math.Between(0, 1000);
+        var enemies = rat_ship.create(950, y, "rat_ship1");
+        enemy_physics(enemies, x);
+    }
+
+</script>
+
+<footer>
+    <h1>KSP :: KITTY SPACE PROGRAM</h1>
+    <p>Designed and Programmed by: <a href="#">KittyWizard</a></p>
+    <p>Made using: <a href="https://phaser.io/">Phaser Game Engine</a></p>
+    <p>Sound Effects and Music: Royalty Free Samples Taken from <a href="https://pixabay.com/sound-effects/">Pixabay</a></p>
+</footer>
+
+</body>
 </html>

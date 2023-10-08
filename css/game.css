@@ -1,0 +1,26 @@
+body {
+    margin: 0;
+    background-color: #7761ab;
+}
+canvas {
+    display: block;
+    margin: auto;
+    border-radius: 10px;
+}
+
+footer {
+  color: #000;
+  padding: 6px;
+  font-size: 15px;
+  text-align: center;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  z-index: 10;
+}
+
+@media only screen and (max-height: 800px) {
+  footer {
+    display:none;
+}
+}

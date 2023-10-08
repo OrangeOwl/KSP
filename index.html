@@ -15,7 +15,7 @@
     <h1>Answer the below questions to adopt your very own kitty cat!</h1>
     <label for="name"> Think of a cool name </label><br>
     <input type="text" class="text-name" id="name" name="name"><br>
-    <label for="months"> What month were you born in? </label><br>
+    <label for="months"> Choose a favourite month </label><br>
     <select id="months" name="months">
       <option value="Jan"> January </option>
       <option value="Feb"> February </option>
@@ -39,5 +39,10 @@
     <input type="submit" id="submit" value="ADOPT YOUR KITTY" class="SUBMIT">
   </form>
   </div>
+  <div class="cookies-banner" id="cookies-banner">
+    This site uses cookies to temporarily store form data. No personal information is collected, stored or tracked in anyway
+    <button onclick="document.body.removeChild(this.parentNode)">DISMISS</button>
+  </div>
+  
   </body>
 </html>
