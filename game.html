@@ -75,6 +75,7 @@
     }
 
     function create (){
+        console.log(this.textures.getTextureKeys());
         bg = this.physics.add.sprite(100, 100, "space").setScale(7);
         bg2 = this.physics.add.sprite(800, 100, "space").setScale(7);
         player = this.physics.add.sprite(100, 200, 'ship').setScale(2);
