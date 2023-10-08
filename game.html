@@ -134,6 +134,7 @@
        {
             console.log(bRate);
             if (bRate < 0) {
+                scoreText.setText(player_name + ':' + score + ' - WEAPON UPGRADE - BEAM'); 
                 beam();           
             } else {
                 bullet(bRate);            
@@ -177,16 +178,16 @@
         return;
        }
 
-       if (score > 2200) {
+       if (score > 3000) {
         // boss event
         scoreText.setText(player_name + ':' + score + ' - THE RODENT KING'); 
-       } if (score > 1500) {
-        scoreText.setText(player_name + ':' + score + ' - WEAPON UPGRADE: BEAM'); 
+       } if (score > 2000) {
+        scoreText.setText(player_name + ':' + score + ' - ALMOST THERE!'); 
         enemySpeed = 1000;
        } if (score > 1000) {
         enemySpeed = 500; 
        } if (score > 300) {
-        scoreText.setText(player_name + ':' + score + ' - WEAPON UPGRADE: RAPID FIRE'); 
+        scoreText.setText(player_name + ':' + score + " - YOU'RE MAKING PROGRESS"); 
         enemySpeed = 400;
        }
        }
