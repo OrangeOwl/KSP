@@ -1,9 +1,0 @@
-::KITTY SPACE PILOTS::
-
-STAGE 1: Small Questionaire about name, birthday, interests etc.
-This determines the kind of cat you get (colour and appearance mostly)
-
-STAGE 2: Raising Cat from Kitten to teen/YA-hood cat
-This determines it's stats for the arcade portion
-
-STAGE 3: Top-down shooter arcade section. Isn't level based but just point-based. And overtime enemies become harder and more frequent
