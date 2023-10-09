@@ -305,7 +305,7 @@
         var y = (player.y < 50) ? Phaser.Math.Between(50, 1000) : Phaser.Math.Between(0, 1000);
         var enemies = rat_ship.create(950, y, "rat_ship2");
         enemies.anims.play('rat_ship2', true);
-        let z = x*2;
+        let z = x*1.5;
         enemy_physics(enemies, z);
     }
 
