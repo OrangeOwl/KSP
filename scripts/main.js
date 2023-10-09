@@ -37,7 +37,7 @@ function game_start(breed, eye_colour, name) {
   document.body.style.backgroundColor = "black";
   var div = document.createElement('div');
   div.setAttribute('class', 'night-mode'); // style it to the form div
-  div.innerHTML = "<h1>**EMERGENCY TRANSMISSION**</h1><br><h2>Unfortunately your brief elation must come to an end. The evil space rats have begun an invasion of planet earth, and the super extra top-secret organization known as KSP (Kitty Space Program) have demanded all able-bodied cats must participate in our global defense.</h2><h2>Say your goodbyes, your cat is needed to save the world.</h2><h2>(Get to 2000 points to win! Collect boost to increasure your fire rate)</h2>";
+  div.innerHTML = "<h1>**EMERGENCY TRANSMISSION**</h1><br><h2>Unfortunately your brief elation must come to an end. The evil space rats have begun an invasion of planet earth, and the super extra top-secret organization known as KSP (Kitty Space Program) have demanded all able-bodied cats must participate in our global defense.</h2><h2>Say your goodbyes, your cat is needed to save the world.</h2><h2>(Get to 1500 points to win! Collect boost to increasure your fire rate)</h2>";
   document.body.appendChild(div); //append div to body
   var cont_txt = document.createElement('div');
   cont_txt.setAttribute('class', 'form');
